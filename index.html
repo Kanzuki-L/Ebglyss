@@ -12,6 +12,8 @@
       html, body {
         width: 100%;
         height: 100%;
+        min-height: 100vh;
+        min-height: 100dvh;
         margin: 0;
         padding: 0;
         overflow: hidden;
@@ -24,6 +26,8 @@
       #unity-container {
         width: 100%;
         height: 100%;
+        min-height: 100vh;
+        min-height: 100dvh;
         position: absolute;
         top: 0;
         left: 0;
@@ -80,7 +84,9 @@
       #fullscreen-btn {
         position: fixed;
         bottom: 16px;
+        bottom: max(16px, env(safe-area-inset-bottom, 16px));
         right: 16px;
+        right: max(16px, env(safe-area-inset-right, 16px));
         width: 42px;
         height: 42px;
         background: rgba(15, 23, 42, 0.75);
@@ -112,65 +118,6 @@
       #fullscreen-btn:hover svg {
         fill: #58d8ff;
       }
-
-      /* Mobile Rotate Prompt Overlay */
-      #orientation-overlay {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(8, 12, 22, 0.96);
-        backdrop-filter: blur(14px);
-        -webkit-backdrop-filter: blur(14px);
-        z-index: 99999;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        color: #ffffff;
-        text-align: center;
-        padding: 24px;
-      }
-      @media screen and (orientation: portrait) {
-        #orientation-overlay {
-          display: flex;
-        }
-      }
-      .rotate-icon-wrapper {
-        width: 80px;
-        height: 80px;
-        margin-bottom: 24px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        animation: rotatePhone 2.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-      }
-      @keyframes rotatePhone {
-        0%, 15% {
-          transform: rotate(0deg);
-        }
-        50%, 75% {
-          transform: rotate(-90deg);
-        }
-        95%, 100% {
-          transform: rotate(0deg);
-        }
-      }
-      .rotate-title {
-        font-size: 20px;
-        font-weight: 700;
-        letter-spacing: 2px;
-        color: #58d8ff;
-        margin: 0 0 10px 0;
-      }
-      .rotate-desc {
-        font-size: 14px;
-        color: #94a3b8;
-        max-width: 280px;
-        line-height: 1.5;
-        margin: 0;
-      }
     </style>
   </head>
   <body>
@@ -191,18 +138,6 @@
       </svg>
     </button>
 
-    <!-- Mobile Rotate Prompt Overlay -->
-    <div id="orientation-overlay">
-      <div class="rotate-icon-wrapper">
-        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#58d8ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="5" y="2" width="14" height="20" rx="3" ry="3"/>
-          <line x1="12" y1="18" x2="12.01" y2="18"/>
-        </svg>
-      </div>
-      <div class="rotate-title">PLEASE ROTATE YOUR DEVICE</div>
-      <div class="rotate-desc">Ebglyss is designed for landscape mode. Rotate your phone sideways for the best gameplay experience.</div>
-    </div>
-
     <script src="Build/204924dd3e7dd086288bc73c20143f65.loader.js"></script>
     <script>
       const canvas = document.querySelector("#unity-canvas");
@@ -210,16 +145,17 @@
       const progressBarFull = document.querySelector("#unity-progress-bar-full");
       const fullscreenBtn = document.querySelector("#fullscreen-btn");
 
-      function checkOrientation() {
-        const overlay = document.querySelector("#orientation-overlay");
-        if (overlay) {
-          const isPortrait = window.innerHeight > window.innerWidth;
-          overlay.style.display = isPortrait ? "flex" : "none";
+      // Ensure canvas resizes smoothly across orientation changes and mobile URL bar toggles
+      function handleViewportResize() {
+        if (canvas) {
+          // Trigger unity canvas refit
+          window.dispatchEvent(new Event("resize"));
         }
       }
-      window.addEventListener("resize", checkOrientation);
-      window.addEventListener("orientationchange", checkOrientation);
-      checkOrientation();
+      window.addEventListener("resize", handleViewportResize);
+      window.addEventListener("orientationchange", () => {
+        setTimeout(handleViewportResize, 100);
+      });
 
       const buildUrl = "Build";
       const config = {
