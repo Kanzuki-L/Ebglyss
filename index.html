@@ -51,26 +51,44 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 16px;
+        gap: 12px;
         z-index: 50;
         transition: opacity 0.5s ease;
+        text-align: center;
+        width: 90%;
+        max-width: 360px;
+        pointer-events: none;
+      }
+      .loading-subtitle {
+        font-size: 14px;
+        font-weight: 700;
+        letter-spacing: 3px;
+        color: #CAF5A8;
+        opacity: 0.85;
+        text-transform: uppercase;
+        text-shadow: 0 0 10px #69A06E;
+        text-align: center;
+        line-height: 1;
       }
       .loading-title {
-        font-size: 26px;
+        font-size: 24px;
         font-weight: 800;
-        letter-spacing: 4px;
+        letter-spacing: 3px;
         color: #CAF5A8;
         text-transform: uppercase;
         text-shadow: 0 0 16px #69A06E;
         text-align: center;
+        line-height: 1.2;
       }
       .progress-bar-container {
-        width: 260px;
+        width: 240px;
+        max-width: 80%;
         height: 8px;
         background: rgba(255, 255, 255, 0.12);
         border-radius: 4px;
         overflow: hidden;
         box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.6);
+        margin-top: 4px;
       }
       #unity-progress-bar-full {
         width: 0%;
@@ -125,7 +143,8 @@
     <div id="unity-container">
       <canvas id="unity-canvas" tabindex="-1"></canvas>
       <div id="unity-loading-bar">
-        <div class="loading-title">Loading Skin Rescue Mission</div>
+        <div class="loading-subtitle">Loading</div>
+        <div class="loading-title">Skin Rescue Mission</div>
         <div class="progress-bar-container">
           <div id="unity-progress-bar-full"></div>
         </div>
@@ -146,22 +165,25 @@
       const progressBarFull = document.querySelector("#unity-progress-bar-full");
       const fullscreenBtn = document.querySelector("#fullscreen-btn");
 
-      // Ensure canvas resizes smoothly across orientation changes and mobile URL bar toggles
-      function handleViewportResize() {
+      // Safely notify Unity canvas to refit on orientation changes or visual viewport changes without infinite recursion
+      function triggerCanvasRefit() {
         if (canvas) {
-          // Trigger unity canvas refit
           window.dispatchEvent(new Event("resize"));
         }
       }
-      window.addEventListener("resize", handleViewportResize);
       window.addEventListener("orientationchange", () => {
-        setTimeout(handleViewportResize, 100);
+        setTimeout(triggerCanvasRefit, 150);
       });
+      if (window.visualViewport) {
+        window.visualViewport.addEventListener("resize", () => {
+          setTimeout(triggerCanvasRefit, 100);
+        }, { passive: true });
+      }
 
       const buildUrl = "Build";
       const config = {
         arguments: [],
-        dataUrl: buildUrl + "/171a03fb565398da48108b279419b2b1.data.unityweb",
+        dataUrl: buildUrl + "/0ea4f3cc5d43f7c884880b20c205f52a.data.unityweb",
         frameworkUrl: buildUrl + "/fb12df0f0dfae6dd0bcc3e74e8918c62.framework.js.unityweb",
         codeUrl: buildUrl + "/d88e6e9499d24f7af61efd1a348a76f3.wasm.unityweb",
         streamingAssetsUrl: "StreamingAssets",
@@ -174,10 +196,13 @@
       createUnityInstance(canvas, config, (progress) => {
         progressBarFull.style.width = (100 * progress) + "%";
       }).then((unityInstance) => {
-        loadingBar.style.opacity = "0";
-        setTimeout(() => {
-          loadingBar.style.display = "none";
-        }, 500);
+        if (loadingBar) {
+          loadingBar.style.opacity = "0";
+          loadingBar.style.pointerEvents = "none";
+          setTimeout(() => {
+            loadingBar.style.display = "none";
+          }, 500);
+        }
 
         fullscreenBtn.onclick = () => {
           if (!document.fullscreenElement && !document.webkitFullscreenElement) {
