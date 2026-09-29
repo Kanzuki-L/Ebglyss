@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>EBGLYSS</title>
+    <title>Skin Rescue</title>
     <style>
       * {
         box-sizing: border-box;
@@ -59,9 +59,9 @@
         font-size: 26px;
         font-weight: 800;
         letter-spacing: 4px;
-        color: #58d8ff;
+        color: #CAF5A8;
         text-transform: uppercase;
-        text-shadow: 0 0 16px rgba(88, 216, 255, 0.4);
+        text-shadow: 0 0 16px #69A06E;
       }
       .progress-bar-container {
         width: 260px;
@@ -74,10 +74,10 @@
       #unity-progress-bar-full {
         width: 0%;
         height: 100%;
-        background: linear-gradient(90deg, #1fc8db 0%, #2cb5e8 100%);
+        background: linear-gradient(90deg, #CAF5A8 0%, #69A06E 100%);
         border-radius: 4px;
         transition: width 0.15s ease-out;
-        box-shadow: 0 0 10px #2cb5e8;
+        box-shadow: 0 0 10px #69A06E;
       }
 
       /* Fullscreen Toggle Button */
@@ -106,7 +106,7 @@
       }
       #fullscreen-btn:hover {
         background: rgba(30, 41, 59, 0.9);
-        border-color: rgba(88, 216, 255, 0.7);
+        border-color: #CAF5A8;
         transform: scale(1.08);
       }
       #fullscreen-btn svg {
@@ -124,7 +124,7 @@
     <div id="unity-container">
       <canvas id="unity-canvas" tabindex="-1"></canvas>
       <div id="unity-loading-bar">
-        <div class="loading-title">EBGLYSS</div>
+        <div class="loading-title">Loading Skin Rescue Mission</div>
         <div class="progress-bar-container">
           <div id="unity-progress-bar-full"></div>
         </div>
@@ -138,7 +138,7 @@
       </svg>
     </button>
 
-    <script src="Build/204924dd3e7dd086288bc73c20143f65.loader.js"></script>
+    <script src="Build/48a0d3f34047bfc1cbdea4bc45971814.loader.js"></script>
     <script>
       const canvas = document.querySelector("#unity-canvas");
       const loadingBar = document.querySelector("#unity-loading-bar");
@@ -160,10 +160,11 @@
       const buildUrl = "Build";
       const config = {
         arguments: [],
-        dataUrl: buildUrl + "/77f65b05a8cd58dd0e2242830bb725ab.data.unityweb",
-        frameworkUrl: buildUrl + "/2727d4ead0808b6e1b35d07b5d5d84cc.framework.js.unityweb",
-        codeUrl: buildUrl + "/5924642867b641b2ceeb8229476f53fa.wasm.unityweb",
+        dataUrl: buildUrl + "/2117937f1df52ab8c37f65b02f0d39e2.data.unityweb",
+        frameworkUrl: buildUrl + "/fb12df0f0dfae6dd0bcc3e74e8918c62.framework.js.unityweb",
+        codeUrl: buildUrl + "/72fe540892f97e076a73780c1f53975c.wasm.unityweb",
         streamingAssetsUrl: "StreamingAssets",
+        devicePixelRatio: Math.min(window.devicePixelRatio || 1, 1.5),
         companyName: "Evoweb",
         productName: "Ebglyss",
         productVersion: "0.0.1",
